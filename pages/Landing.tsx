@@ -1,127 +1,281 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface LandingProps {
   onLogin: () => void;
 }
 
+const L2_PARTNERS = [
+  { name: 'Base', logo: 'https://avatars.githubusercontent.com/u/108554348?s=200&v=4' },
+  { name: 'Arbitrum', logo: 'https://assets.coingecko.com/coins/images/16547/large/arbitrum.png' },
+  { name: 'Optimism', logo: 'https://assets.coingecko.com/coins/images/25244/large/Optimism.png' },
+  { name: 'Starknet', logo: 'https://assets.coingecko.com/coins/images/35294/large/starknet.png' },
+  { name: 'Avalanche', logo: 'https://assets.coingecko.com/coins/images/12559/large/Avalanche_Circle_Red.png' },
+  { name: 'Lisk', logo: 'https://assets.coingecko.com/coins/images/224/large/Lisk.png' },
+  { name: 'Risechain', logo: 'https://pbs.twimg.com/profile_images/1785233139363512320/l4Ym_M7S_400x400.jpg' },
+];
+
 const Landing: React.FC<LandingProps> = ({ onLogin }) => {
   const [authMode, setAuthMode] = useState<'signin' | 'signup' | null>(null);
+  const [counts, setCounts] = useState({ rewards: 0, builders: 0, protocols: 0 });
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setCounts({ rewards: 1245000, builders: 18400, protocols: 42 });
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white overflow-x-hidden selection:bg-blue-500/30">
-      {/* Background Decorative Elements */}
+    <div className="min-h-screen bg-slate-950 text-white overflow-x-hidden selection:bg-indigo-500/30">
+      {/* Dynamic Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/10 blur-[120px] rounded-full"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-50 contrast-150"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-indigo-600/10 blur-[150px] rounded-full"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-600/10 blur-[150px] rounded-full"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none"></div>
       </div>
 
-      <nav className="relative z-10 flex items-center justify-between px-6 py-8 max-w-7xl mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
+      <nav className="relative z-50 flex items-center justify-between px-8 py-8 max-w-7xl mx-auto">
+        <div className="flex items-center gap-3 group cursor-pointer">
+          <div className="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-600/30 group-hover:scale-110 transition-transform">
             <i className="fa-brands fa-ethereum text-white text-2xl"></i>
           </div>
-          <span className="font-bold text-2xl tracking-tighter">crETH</span>
+          <div className="flex flex-col">
+            <span className="font-black text-2xl tracking-tighter leading-none font-heading">crETH</span>
+            <span className="text-[8px] font-black uppercase tracking-[0.2em] text-indigo-400">Talent Protocol</span>
+          </div>
         </div>
         
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-8">
+          <div className="flex gap-6 text-[10px] font-black uppercase tracking-widest text-slate-500">
+            <a href="#ecosystem" className="hover:text-indigo-400 transition-colors">Ecosystem</a>
+            <a href="#how-it-works" className="hover:text-indigo-400 transition-colors">The Protocol</a>
+            <a href="#stats" className="hover:text-indigo-400 transition-colors">Network State</a>
+          </div>
+          <div className="h-6 w-px bg-slate-800"></div>
           <button 
             onClick={() => setAuthMode('signin')}
-            className="text-sm font-bold text-slate-400 hover:text-white transition-colors"
+            className="text-xs font-black uppercase tracking-widest text-slate-400 hover:text-white transition-colors"
           >
             Sign In
           </button>
           <button 
             onClick={() => setAuthMode('signup')}
-            className="bg-white/5 border border-white/10 hover:bg-white/10 px-6 py-2.5 rounded-full text-sm font-bold transition-all backdrop-blur-md"
+            className="bg-white text-slate-950 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-white/5"
           >
-            Create Account
+            Terminal Access
           </button>
         </div>
       </nav>
 
-      <main className="relative z-10 pt-16 pb-32 px-6 max-w-7xl mx-auto flex flex-col items-center text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-600/10 border border-blue-600/20 text-blue-400 text-[10px] font-black uppercase tracking-widest mb-8 animate-fadeIn">
-          <span className="flex h-2 w-2 rounded-full bg-blue-400 animate-pulse"></span>
-          LIVE ON ETHEREUM MAINNET
-        </div>
-        
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-8 leading-[0.9] max-w-5xl">
-          The Hub for <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Ethereum Creators</span> & Builders.
-        </h1>
-        
-        <p className="text-lg md:text-xl text-slate-400 max-w-2xl mb-12 leading-relaxed">
-          The premier decentralized gig marketplace for Ethereum. Connect with top projects and earn rewards in ETH and native tokens.
-        </p>
-
-        <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
-          <button 
-            onClick={() => setAuthMode('signup')}
-            className="flex-1 bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-2xl font-bold text-lg transition-all shadow-xl shadow-blue-600/20 active:scale-95"
-          >
-            Sign Up
-          </button>
+      <main className="relative z-10">
+        {/* Hero Section */}
+        <section className="pt-24 pb-16 px-6 max-w-7xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600/10 border border-indigo-600/20 text-indigo-400 text-[9px] font-black uppercase tracking-widest mb-10 animate-bounce-low">
+            <i className="fa-solid fa-bolt-lightning"></i>
+            Decentralized Professional Infrastructure
+          </div>
           
-          <button 
-            onClick={() => setAuthMode('signin')}
-            className="flex-1 bg-slate-800 hover:bg-slate-700 text-white px-8 py-4 rounded-2xl font-bold text-lg transition-all border border-slate-700 active:scale-95"
-          >
-            Sign In
-          </button>
-        </div>
+          <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-8 leading-[0.85] font-heading">
+            WHERE CODE <br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-500 to-indigo-600">MEETS CAPITAL.</span>
+          </h1>
+          
+          <p className="text-lg md:text-xl text-slate-400 max-w-3xl mx-auto mb-14 leading-relaxed font-medium">
+            crETH is the first unified talent network for the Ethereum scaling roadmap. 
+            Direct, trustless, and fully verifiable professional settlement on every major L2.
+          </p>
 
-        <div className="mt-20 flex items-center justify-center gap-8 opacity-40 grayscale pointer-events-none">
-          <div className="flex items-center gap-2 font-black text-2xl uppercase tracking-tighter">
-            <i className="fa-brands fa-ethereum text-blue-400"></i>
-            ETHEREUM
+          <div className="flex flex-col sm:flex-row gap-5 w-full max-w-lg mx-auto justify-center mb-32">
+            <button 
+              onClick={() => setAuthMode('signup')}
+              className="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white px-10 py-5 rounded-3xl font-black text-xs uppercase tracking-widest transition-all shadow-2xl shadow-indigo-600/20 active:scale-95 flex items-center justify-center gap-3"
+            >
+              Start Earning
+              <i className="fa-solid fa-arrow-right"></i>
+            </button>
+            
+            <button 
+              onClick={() => setAuthMode('signin')}
+              className="flex-1 bg-slate-900/50 hover:bg-slate-800 text-white px-10 py-5 rounded-3xl font-black text-xs uppercase tracking-widest transition-all border border-slate-800 active:scale-95"
+            >
+              Find Talent
+            </button>
           </div>
-        </div>
 
-        <div className="mt-16 flex items-center gap-4 text-slate-500 text-sm font-medium">
-          <div className="flex -space-x-2">
-            {[1, 2, 3, 4].map(i => (
-              <div key={i} className="w-8 h-8 rounded-full border-2 border-slate-950 bg-slate-800 flex items-center justify-center">
-                <img src={`https://i.pravatar.cc/100?u=${i + 20}`} alt="Avatar" className="w-full h-full rounded-full opacity-80" />
+          {/* Infinite Marquee Section */}
+          <div id="ecosystem" className="py-12 border-y border-slate-900/50 overflow-hidden relative">
+            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-slate-950 to-transparent z-10"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-slate-950 to-transparent z-10"></div>
+            
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 mb-10">The Multi-Chain Network State</p>
+            
+            <div className="flex animate-marquee whitespace-nowrap">
+              {/* Double the list for seamless loop */}
+              {[...L2_PARTNERS, ...L2_PARTNERS].map((l2, idx) => (
+                <div key={`${l2.name}-${idx}`} className="flex items-center gap-4 mx-12 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500 cursor-pointer">
+                  <img src={l2.logo} alt={l2.name} className="w-10 h-10 rounded-xl" />
+                  <span className="text-2xl font-black tracking-tighter uppercase text-slate-300">{l2.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Dynamic Context: Why crETH? */}
+        <section className="py-32 px-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <div className="space-y-8 text-left">
+              <h2 className="text-5xl font-black font-heading leading-tight tracking-tighter">
+                REPLACING TRUST <br/>
+                <span className="text-indigo-500 text-6xl">WITH CODE.</span>
+              </h2>
+              <div className="space-y-6 text-slate-400 font-medium leading-relaxed">
+                <p>
+                  Global gig marketplaces are broken by high fees, regional bias, and opaque payout terms. crETH solves this by moving the entire contract lifecycle on-chain.
+                </p>
+                <div className="flex items-start gap-4 p-6 rounded-3xl bg-slate-900/40 border border-slate-800">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center shrink-0">
+                    <i className="fa-solid fa-shield-halved text-indigo-500"></i>
+                  </div>
+                  <div>
+                    <h4 className="text-white font-black uppercase tracking-widest text-xs mb-1">Atomic Settlement</h4>
+                    <p className="text-sm">No "withdraw" buttons. Funds are pushed directly from the escrow pool to your wallet the moment work is approved.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4 p-6 rounded-3xl bg-slate-900/40 border border-slate-800">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
+                    <i className="fa-solid fa-fingerprint text-emerald-500"></i>
+                  </div>
+                  <div>
+                    <h4 className="text-white font-black uppercase tracking-widest text-xs mb-1">On-Chain Résumé</h4>
+                    <p className="text-sm">Every completed gig mints a Soulbound NFT. Your reputation is a permanent, verifiable asset on the Ethereum ledger.</p>
+                  </div>
+                </div>
               </div>
-            ))}
+            </div>
+            
+            {/* Visual Stats Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6" id="stats">
+              <div className="p-10 rounded-[48px] glass border-slate-800 text-left hover:border-indigo-500/50 transition-colors">
+                <div className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-4">Total Liquidity</div>
+                <div className="text-5xl font-black font-heading tracking-tight mb-2">
+                  ${(counts.rewards / 1000000).toFixed(1)}M+
+                </div>
+                <p className="text-slate-500 text-xs font-black uppercase tracking-widest">Across All L2s</p>
+              </div>
+              <div className="p-10 rounded-[48px] glass border-slate-800 text-left mt-8 hover:border-blue-500/50 transition-colors">
+                <div className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-4">Builders</div>
+                <div className="text-5xl font-black font-heading tracking-tight mb-2">
+                  {counts.builders.toLocaleString()}
+                </div>
+                <p className="text-slate-500 text-xs font-black uppercase tracking-widest">Verified Accounts</p>
+              </div>
+              <div className="p-10 rounded-[48px] glass border-slate-800 text-left hover:border-emerald-500/50 transition-colors">
+                <div className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-4">Integrations</div>
+                <div className="text-5xl font-black font-heading tracking-tight mb-2">
+                  {counts.protocols}
+                </div>
+                <p className="text-slate-500 text-xs font-black uppercase tracking-widest">DAOs & Protocols</p>
+              </div>
+              <div className="p-10 rounded-[48px] glass border-slate-800 text-left mt-8 hover:border-rose-500/50 transition-colors">
+                <div className="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-4">Escrow Avg</div>
+                <div className="text-5xl font-black font-heading tracking-tight mb-2">
+                  0.04s
+                </div>
+                <p className="text-slate-500 text-xs font-black uppercase tracking-widest">Settlement Time</p>
+              </div>
+            </div>
           </div>
-          Join 10,000+ builders on Ethereum
-        </div>
+        </section>
 
-        {/* Auth Modal / Overlay */}
+        {/* How it works - Protocol Flow */}
+        <section id="how-it-works" className="py-32 px-6 max-w-7xl mx-auto text-center border-t border-slate-900/50">
+          <h2 className="text-4xl md:text-6xl font-black font-heading mb-24 tracking-tighter">THE TRUSTLESS <span className="text-indigo-500">LIFECYCLE</span></h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-20 relative">
+            <div className="hidden md:block absolute top-16 left-[15%] right-[15%] h-px bg-gradient-to-r from-transparent via-slate-800 to-transparent z-0"></div>
+            
+            <div className="relative z-10 space-y-8 group">
+              <div className="w-32 h-32 rounded-[40px] bg-indigo-600 text-white flex items-center justify-center mx-auto text-4xl shadow-2xl shadow-indigo-600/30 group-hover:scale-110 transition-transform">
+                <i className="fa-solid fa-vault"></i>
+              </div>
+              <div>
+                <h3 className="text-2xl font-black uppercase tracking-tight mb-4">1. Staked</h3>
+                <p className="text-slate-500 text-sm leading-relaxed font-medium">Sponsors lock rewards in a non-custodial L2 vault. The contract only accepts submissions once the full reward is provably staked.</p>
+              </div>
+            </div>
+
+            <div className="relative z-10 space-y-8 group">
+              <div className="w-32 h-32 rounded-[40px] bg-slate-900 border border-slate-800 text-indigo-400 flex items-center justify-center mx-auto text-4xl shadow-2xl group-hover:scale-110 transition-transform">
+                <i className="fa-solid fa-code-merge"></i>
+              </div>
+              <div>
+                <h3 className="text-2xl font-black uppercase tracking-tight mb-4">2. Shipped</h3>
+                <p className="text-slate-500 text-sm leading-relaxed font-medium">Talent submits work via encrypted IPFS payloads. Every submission is timestamped and cryptographically linked to the contributor's wallet.</p>
+              </div>
+            </div>
+
+            <div className="relative z-10 space-y-8 group">
+              <div className="w-32 h-32 rounded-[40px] bg-emerald-600 text-white flex items-center justify-center mx-auto text-4xl shadow-2xl shadow-emerald-600/30 group-hover:scale-110 transition-transform">
+                <i className="fa-solid fa-circle-check"></i>
+              </div>
+              <div>
+                <h3 className="text-2xl font-black uppercase tracking-tight mb-4">3. Settled</h3>
+                <p className="text-slate-500 text-sm leading-relaxed font-medium">Sponsor triggers payout. Vault releases funds immediately and mints a Soulbound Verification NFT to the talent's profile.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-40 px-6 text-center bg-gradient-to-b from-transparent to-indigo-950/20">
+          <div className="max-w-4xl mx-auto space-y-12">
+            <h2 className="text-5xl md:text-7xl font-black font-heading tracking-tighter">READY TO BUILD <br/> <span className="text-indigo-500 underline decoration-indigo-500/30">THE FUTURE?</span></h2>
+            <button 
+              onClick={() => setAuthMode('signup')}
+              className="px-12 py-6 bg-white text-slate-950 rounded-3xl font-black text-sm uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-white/10"
+            >
+              Access Terminal Now
+            </button>
+          </div>
+        </section>
+
+        {/* Auth Modal Overlay */}
         {(authMode === 'signin' || authMode === 'signup') && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div 
-              className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
+              className="absolute inset-0 bg-slate-950/95 backdrop-blur-2xl"
               onClick={() => setAuthMode(null)}
             ></div>
-            <div className="relative glass w-full max-w-md p-8 rounded-[32px] border border-white/10 shadow-2xl animate-scaleIn">
+            <div className="relative glass w-full max-w-md p-10 rounded-[56px] border border-white/10 shadow-[0_0_120px_rgba(79,70,229,0.3)] animate-scaleIn text-center overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-indigo-500"></div>
+              
               <button 
                 onClick={() => setAuthMode(null)}
-                className="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors"
+                className="absolute top-8 right-8 text-slate-500 hover:text-white transition-colors"
               >
                 <i className="fa-solid fa-xmark text-xl"></i>
               </button>
 
-              <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-600/20">
-                  <i className="fa-brands fa-ethereum text-white text-3xl"></i>
+              <div className="mb-12">
+                <div className="w-24 h-24 bg-indigo-600 rounded-[32px] flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-indigo-600/30">
+                  <i className="fa-brands fa-ethereum text-white text-5xl"></i>
                 </div>
-                <h2 className="text-2xl font-black mb-2">
-                  {authMode === 'signin' ? 'Sign In' : 'Sign Up'}
+                <h2 className="text-3xl font-black uppercase tracking-tight mb-2">
+                  {authMode === 'signin' ? 'Welcome Back' : 'Create Identity'}
                 </h2>
-                <p className="text-slate-400 text-sm">
-                  {authMode === 'signin' ? 'Welcome back to the Ethereum network' : 'Start your journey on Ethereum'}
+                <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">
+                  Authentication Layer v4.2.0
                 </p>
               </div>
 
               <div className="space-y-3">
                 <button 
                   onClick={onLogin}
-                  className="w-full flex items-center justify-between bg-white text-slate-950 p-4 rounded-2xl font-bold transition-all hover:bg-slate-100 group"
+                  className="w-full flex items-center justify-between bg-white text-slate-950 p-6 rounded-3xl font-black text-xs uppercase tracking-widest transition-all hover:bg-slate-100 group shadow-xl"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-4">
                     <i className="fa-solid fa-wallet text-xl"></i>
                     Connect Wallet
                   </div>
@@ -130,71 +284,76 @@ const Landing: React.FC<LandingProps> = ({ onLogin }) => {
 
                 <button 
                   onClick={onLogin}
-                  className="w-full flex items-center justify-between bg-slate-900 border border-slate-800 text-white p-4 rounded-2xl font-bold transition-all hover:bg-slate-800 group"
+                  className="w-full flex items-center justify-between bg-slate-900 border border-slate-800 text-white p-6 rounded-3xl font-black text-xs uppercase tracking-widest transition-all hover:bg-slate-800 group"
                 >
-                  <div className="flex items-center gap-3">
-                    <i className="fa-brands fa-google text-xl text-red-500"></i>
-                    Continue with Google
+                  <div className="flex items-center gap-4">
+                    <i className="fa-brands fa-google text-xl text-rose-500"></i>
+                    Web3 Social Auth
                   </div>
                   <i className="fa-solid fa-arrow-right -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all"></i>
                 </button>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-white/5 text-center">
-                <p className="text-slate-500 text-xs">
-                  {authMode === 'signin' ? (
-                    <>New to crETH? <button onClick={() => setAuthMode('signup')} className="text-blue-500 font-bold">Sign Up</button></>
-                  ) : (
-                    <>Already have an account? <button onClick={() => setAuthMode('signin')} className="text-blue-500 font-bold">Sign In</button></>
-                  )}
-                </p>
-              </div>
+              <p className="mt-12 text-slate-600 text-[9px] font-black uppercase tracking-[0.3em]">
+                {authMode === 'signin' ? (
+                  <>Don't have a profile? <button onClick={() => setAuthMode('signup')} className="text-indigo-500 hover:underline">Register Hub</button></>
+                ) : (
+                  <>Already registered? <button onClick={() => setAuthMode('signin')} className="text-indigo-500 hover:underline">Sign In Hub</button></>
+                )}
+              </p>
             </div>
           </div>
         )}
-
-        {/* Feature Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-32 w-full">
-          <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 text-left hover:bg-white/[0.05] transition-all group">
-            <div className="w-12 h-12 rounded-2xl bg-blue-600/20 text-blue-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <i className="fa-solid fa-code text-xl"></i>
-            </div>
-            <h3 className="text-xl font-bold mb-3">Protocol Dev</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">Smart contracts, DeFi integrations, and protocol optimization on Ethereum.</p>
-          </div>
-          <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 text-left hover:bg-white/[0.05] transition-all group">
-            <div className="w-12 h-12 rounded-2xl bg-pink-600/20 text-pink-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <i className="fa-solid fa-palette text-xl"></i>
-            </div>
-            <h3 className="text-xl font-bold mb-3">NFT Creative</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">Launch collections, design assets, and create visual lore for the ecosystem.</p>
-          </div>
-          <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 text-left hover:bg-white/[0.05] transition-all group">
-            <div className="w-12 h-12 rounded-2xl bg-amber-600/20 text-amber-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <i className="fa-solid fa-award text-xl"></i>
-            </div>
-            <h3 className="text-xl font-bold mb-3">On-Chain Reputation</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">Proof-of-Work SBTs minted directly to your wallet upon completion.</p>
-          </div>
-        </div>
       </main>
 
-      <footer className="relative z-10 border-t border-white/5 py-12 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-center md:justify-start gap-2">
-              <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
-                <i className="fa-brands fa-ethereum text-white text-[10px]"></i>
+      <footer className="relative z-10 border-t border-slate-900/50 py-32 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
+          <div className="space-y-8">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center">
+                <i className="fa-brands fa-ethereum text-white text-xl"></i>
               </div>
-              <span className="font-bold text-sm tracking-tighter">crETH</span>
+              <span className="font-black text-2xl tracking-tighter uppercase font-heading">crETH</span>
             </div>
-            <span className="text-xs text-slate-500">Decentralized Gig Infrastructure on Ethereum</span>
+            <p className="text-slate-500 text-sm max-w-sm leading-relaxed font-medium">
+              The professional layer of the Ethereum scaling roadmap. 
+              Built for builders, by builders.
+            </p>
+            <div className="flex gap-6 text-slate-500 text-xl">
+               <i className="fa-brands fa-x-twitter hover:text-white cursor-pointer transition-colors"></i>
+               <i className="fa-brands fa-discord hover:text-white cursor-pointer transition-colors"></i>
+               <i className="fa-brands fa-github hover:text-white cursor-pointer transition-colors"></i>
+             </div>
           </div>
-          <div className="flex items-center gap-6 text-slate-500 text-xs font-bold uppercase tracking-widest">
-            <a href="#" className="hover:text-white transition-colors">Twitter</a>
-            <a href="#" className="hover:text-white transition-colors">Discord</a>
-            <a href="#" className="hover:text-white transition-colors">Docs</a>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-20">
+            <div className="space-y-6">
+              <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Network</h4>
+              <nav className="flex flex-col gap-4 text-xs text-slate-600 font-bold uppercase tracking-widest">
+                <a href="#" className="hover:text-indigo-400 transition-colors">Documentation</a>
+                <a href="#" className="hover:text-indigo-400 transition-colors">Smart Contracts</a>
+                <a href="#" className="hover:text-indigo-400 transition-colors">Whitepaper</a>
+              </nav>
+            </div>
+            <div className="space-y-6">
+              <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Company</h4>
+              <nav className="flex flex-col gap-4 text-xs text-slate-600 font-bold uppercase tracking-widest">
+                <a href="#" className="hover:text-indigo-400 transition-colors">Ecosystem</a>
+                <a href="#" className="hover:text-indigo-400 transition-colors">Brand Kit</a>
+                <a href="#" className="hover:text-indigo-400 transition-colors">Terms</a>
+              </nav>
+            </div>
+            <div className="space-y-6">
+              <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Node</h4>
+              <nav className="flex flex-col gap-4 text-xs text-slate-600 font-bold uppercase tracking-widest">
+                <a href="#" className="hover:text-indigo-400 transition-colors">Status</a>
+                <a href="#" className="hover:text-indigo-400 transition-colors">Explorer</a>
+                <a href="#" className="hover:text-indigo-400 transition-colors">Uptime</a>
+              </nav>
+            </div>
           </div>
+        </div>
+        <div className="max-w-7xl mx-auto mt-32 pt-12 border-t border-slate-900/30 text-center">
+           <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-800 italic">SECURED BY THE ETHEREUM VIRTUAL MACHINE</span>
         </div>
       </footer>
     </div>
