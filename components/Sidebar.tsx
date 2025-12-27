@@ -7,9 +7,10 @@ interface SidebarProps {
   onNavigate: (page: string) => void;
   role: UserRole;
   theme: 'light' | 'dark';
+  user: any;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ currentPage, onNavigate, role, theme }) => {
+const Sidebar: React.FC<SidebarProps> = ({ currentPage, onNavigate, role, theme, user }) => {
   const isDark = theme === 'dark';
   
   const menuItems = [
@@ -34,8 +35,8 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onNavigate, role, theme 
           onClick={() => onNavigate(item.id)}
           className={`flex items-center justify-between px-4 py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${
             currentPage === item.id 
-              ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' 
-              : `hover:bg-blue-600/10 hover:text-blue-500 ${isDark ? 'text-slate-500' : 'text-slate-600'}`
+              ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' 
+              : `hover:bg-indigo-600/10 hover:text-indigo-500 ${isDark ? 'text-slate-500' : 'text-slate-600'}`
           }`}
         >
           <div className="flex items-center gap-3">
@@ -52,15 +53,17 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onNavigate, role, theme 
 
       <div className={`mt-auto p-5 rounded-[24px] border transition-all duration-300 ${isDark ? 'bg-slate-950 border-slate-800 shadow-2xl' : 'bg-slate-50 border-slate-200 shadow-inner'}`}>
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white font-black text-sm">JD</div>
-          <div>
-            <div className={`text-xs font-black uppercase tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>EtherDev_JD</div>
-            <div className="text-[9px] font-black text-blue-500 uppercase tracking-widest">Rep: 740</div>
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white font-black text-sm overflow-hidden border border-white/10">
+            {user.avatarUrl ? <img src={user.avatarUrl} className="w-full h-full object-cover" /> : user.username.substring(0, 2).toUpperCase()}
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className={`text-xs font-black uppercase tracking-tight truncate ${isDark ? 'text-white' : 'text-slate-900'}`}>{user.username}</div>
+            <div className="text-[9px] font-black text-indigo-500 uppercase tracking-widest">Rep: {user.reputation}</div>
           </div>
         </div>
         <button 
           onClick={() => onNavigate('profile')}
-          className={`w-full py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${isDark ? 'bg-slate-800 hover:bg-slate-700 text-white' : 'bg-white border border-slate-200 hover:border-blue-500 hover:text-blue-500 shadow-sm'}`}
+          className={`w-full py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${isDark ? 'bg-slate-800 hover:bg-slate-700 text-white' : 'bg-white border border-slate-200 hover:border-indigo-500 hover:text-indigo-500 shadow-sm'}`}
         >
           My Portfolio
         </button>

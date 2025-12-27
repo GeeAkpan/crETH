@@ -4,19 +4,31 @@ import React, { useState } from 'react';
 interface SettingsProps {
   theme: 'light' | 'dark';
   setTheme: (t: 'light' | 'dark') => void;
+  notifications: { email: boolean; push: boolean; xmtp: boolean };
+  setNotifications: React.Dispatch<React.SetStateAction<{ email: boolean; push: boolean; xmtp: boolean }>>;
+  privacy: { publicRep: boolean; hideEarnings: boolean };
+  setPrivacy: React.Dispatch<React.SetStateAction<{ publicRep: boolean; hideEarnings: boolean }>>;
 }
 
-const Settings: React.FC<SettingsProps> = ({ theme, setTheme }) => {
-  const [notifications, setNotifications] = useState({
-    email: true,
-    push: false,
-    xmtp: true,
-  });
-  const [privacy, setPrivacy] = useState({
-    publicRep: true,
-    hideEarnings: false,
-  });
+const Toggle: React.FC<{ active: boolean; onToggle: () => void }> = ({ active, onToggle }) => (
+  <button 
+    onClick={onToggle}
+    className={`w-11 h-6 rounded-full relative transition-all duration-300 focus:outline-none ${active ? 'bg-indigo-600' : 'bg-slate-700'}`}
+  >
+    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${active ? 'left-6' : 'left-1'}`}></div>
+  </button>
+);
 
+const Settings: React.FC<SettingsProps> = ({ 
+  theme, 
+  setTheme, 
+  notifications, 
+  setNotifications, 
+  privacy, 
+  setPrivacy 
+}) => {
+  const [isGithubConnected, setIsGithubConnected] = useState(true);
+  const [isDiscordConnected, setIsDiscordConnected] = useState(false);
   const isDark = theme === 'dark';
 
   const toggleNotification = (key: keyof typeof notifications) => {
@@ -37,18 +49,18 @@ const Settings: React.FC<SettingsProps> = ({ theme, setTheme }) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <aside className="space-y-1">
           {[
-            { id: 'account', label: 'Account & Security', icon: 'fa-shield-halved' },
             { id: 'appearance', label: 'Appearance', icon: 'fa-palette' },
             { id: 'notifications', label: 'Notifications', icon: 'fa-bell' },
             { id: 'privacy', label: 'Privacy', icon: 'fa-eye-slash' },
+            { id: 'account', label: 'Account & Security', icon: 'fa-shield-halved' },
           ].map((item) => (
             <button
               key={item.id}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                item.id === 'account' 
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' 
-                  : `text-slate-500 hover:text-blue-500 ${isDark ? 'hover:bg-slate-800' : 'hover:bg-slate-100'}`
-              }`}
+              onClick={() => {
+                const element = document.getElementById(`section-${item.id}`);
+                element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-slate-500 hover:text-indigo-500 ${isDark ? 'hover:bg-slate-800' : 'hover:bg-slate-100'}`}
             >
               <i className={`fa-solid ${item.icon} w-5`}></i>
               {item.label}
@@ -58,9 +70,9 @@ const Settings: React.FC<SettingsProps> = ({ theme, setTheme }) => {
 
         <div className="md:col-span-2 space-y-8">
           {/* Appearance Section */}
-          <section className={`p-8 rounded-3xl border transition-all duration-300 ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200/50'}`}>
+          <section id="section-appearance" className={`p-8 rounded-3xl border transition-all duration-300 ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200/50'}`}>
             <h2 className={`text-xl font-black uppercase tracking-tight flex items-center gap-3 mb-6 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              <i className="fa-solid fa-palette text-blue-500"></i>
+              <i className="fa-solid fa-palette text-indigo-500"></i>
               Appearance
             </h2>
             
@@ -73,7 +85,7 @@ const Settings: React.FC<SettingsProps> = ({ theme, setTheme }) => {
                     onClick={() => setTheme(t)}
                     className={`p-6 rounded-2xl border transition-all text-center group ${
                       theme === t 
-                        ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-600/20' 
+                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-600/20' 
                         : `${isDark ? 'bg-slate-950 border-slate-800 text-slate-500 hover:border-slate-700' : 'bg-slate-50 border-slate-200 text-slate-400 hover:border-slate-300'}`
                     }`}
                   >
@@ -85,17 +97,63 @@ const Settings: React.FC<SettingsProps> = ({ theme, setTheme }) => {
             </div>
           </section>
 
-          {/* Account Security Section */}
-          <section className={`p-8 rounded-3xl border transition-all duration-300 ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200/50'}`}>
+          {/* Privacy Section */}
+          <section id="section-privacy" className={`p-8 rounded-3xl border transition-all duration-300 ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200/50'}`}>
             <h2 className={`text-xl font-black uppercase tracking-tight flex items-center gap-3 mb-6 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              <i className="fa-solid fa-fingerprint text-blue-500"></i>
+              <i className="fa-solid fa-eye-slash text-indigo-500"></i>
+              Privacy
+            </h2>
+            <div className="space-y-4">
+              <div className={`flex items-center justify-between p-4 rounded-2xl border ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                <div>
+                  <p className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Public Reputation NFT Vault</p>
+                  <p className="text-[9px] text-slate-500 mt-1">Allow anyone to view your earned Soulbound NFTs.</p>
+                </div>
+                <Toggle active={privacy.publicRep} onToggle={() => togglePrivacy('publicRep')} />
+              </div>
+              <div className={`flex items-center justify-between p-4 rounded-2xl border ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                <div>
+                  <p className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Anonymize Earnings</p>
+                  <p className="text-[9px] text-slate-500 mt-1">Blur total dollar amounts on your public profile cards.</p>
+                </div>
+                <Toggle active={privacy.hideEarnings} onToggle={() => togglePrivacy('hideEarnings')} />
+              </div>
+            </div>
+          </section>
+
+          {/* Notifications Section */}
+          <section id="section-notifications" className={`p-8 rounded-3xl border transition-all duration-300 ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200/50'}`}>
+            <h2 className={`text-xl font-black uppercase tracking-tight flex items-center gap-3 mb-6 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <i className="fa-solid fa-bell text-indigo-500"></i>
+              Notifications
+            </h2>
+            <div className="space-y-4">
+              <div className={`flex items-center justify-between p-4 rounded-2xl border ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                <span className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Email Digest</span>
+                <Toggle active={notifications.email} onToggle={() => toggleNotification('email')} />
+              </div>
+              <div className={`flex items-center justify-between p-4 rounded-2xl border ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                <span className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Direct Push</span>
+                <Toggle active={notifications.push} onToggle={() => toggleNotification('push')} />
+              </div>
+              <div className={`flex items-center justify-between p-4 rounded-2xl border ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                <span className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>XMTP Secure Messaging</span>
+                <Toggle active={notifications.xmtp} onToggle={() => toggleNotification('xmtp')} />
+              </div>
+            </div>
+          </section>
+
+          {/* Account Security Section */}
+          <section id="section-account" className={`p-8 rounded-3xl border transition-all duration-300 ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200/50'}`}>
+            <h2 className={`text-xl font-black uppercase tracking-tight flex items-center gap-3 mb-6 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <i className="fa-solid fa-fingerprint text-indigo-500"></i>
               Account Security
             </h2>
             
             <div className="space-y-4">
               <div className={`flex items-center justify-between p-4 rounded-2xl border ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
                 <div className="flex items-center gap-3">
-                  <i className="fa-brands fa-ethereum text-blue-500 text-xl"></i>
+                  <i className="fa-brands fa-ethereum text-indigo-500 text-xl"></i>
                   <div>
                     <p className={`text-sm font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>0x4c21...8e2f</p>
                     <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest">Main Settlement Wallet</p>
@@ -107,34 +165,32 @@ const Settings: React.FC<SettingsProps> = ({ theme, setTheme }) => {
               <div>
                 <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Linked Authentication</label>
                 <div className="grid grid-cols-2 gap-3">
-                  <button className={`flex items-center gap-3 p-4 rounded-2xl border transition-all ${isDark ? 'bg-slate-900 border-slate-800 hover:bg-slate-800' : 'bg-slate-50 border-slate-200 hover:bg-white'}`}>
-                    <i className="fa-brands fa-github text-lg"></i>
-                    <span className="text-[10px] font-black uppercase tracking-widest">GitHub</span>
+                  <button 
+                    onClick={() => setIsGithubConnected(!isGithubConnected)}
+                    className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${isDark ? 'bg-slate-900 border-slate-800 hover:bg-slate-800' : 'bg-slate-50 border-slate-200 hover:bg-white'}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <i className="fa-brands fa-github text-lg"></i>
+                      <span className="text-[10px] font-black uppercase tracking-widest">GitHub</span>
+                    </div>
+                    <span className={`text-[8px] font-black uppercase ${isGithubConnected ? 'text-indigo-400' : 'text-slate-500'}`}>
+                      {isGithubConnected ? 'Linked' : 'Link'}
+                    </span>
                   </button>
-                  <button className={`flex items-center gap-3 p-4 rounded-2xl border transition-all ${isDark ? 'bg-slate-900 border-slate-800 hover:bg-slate-800' : 'bg-slate-50 border-slate-200 hover:bg-white'}`}>
-                    <i className="fa-brands fa-discord text-indigo-500 text-lg"></i>
-                    <span className="text-[10px] font-black uppercase tracking-widest">Discord</span>
+                  <button 
+                    onClick={() => setIsDiscordConnected(!isDiscordConnected)}
+                    className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${isDark ? 'bg-slate-900 border-slate-800 hover:bg-slate-800' : 'bg-slate-50 border-slate-200 hover:bg-white'}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <i className="fa-brands fa-discord text-indigo-500 text-lg"></i>
+                      <span className="text-[10px] font-black uppercase tracking-widest">Discord</span>
+                    </div>
+                    <span className={`text-[8px] font-black uppercase ${isDiscordConnected ? 'text-indigo-400' : 'text-slate-500'}`}>
+                      {isDiscordConnected ? 'Linked' : 'Link'}
+                    </span>
                   </button>
                 </div>
               </div>
-            </div>
-          </section>
-
-          {/* Notifications Section */}
-          <section className={`p-8 rounded-3xl border transition-all duration-300 ${isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200/50'}`}>
-            <h2 className={`text-xl font-black uppercase tracking-tight flex items-center gap-3 mb-6 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              <i className="fa-solid fa-bell text-blue-500"></i>
-              Notifications
-            </h2>
-            <div className="space-y-4">
-              {['Email Digest', 'Direct Push', 'XMTP Secure Messaging'].map((label, idx) => (
-                <div key={label} className={`flex items-center justify-between p-4 rounded-2xl border ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
-                  <span className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>{label}</span>
-                  <button className="w-10 h-5 bg-blue-600 rounded-full relative">
-                    <div className="absolute top-1 right-1 w-3 h-3 bg-white rounded-full"></div>
-                  </button>
-                </div>
-              ))}
             </div>
           </section>
         </div>

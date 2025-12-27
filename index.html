@@ -10,57 +10,101 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --transition-speed: 0.4s;
+      --transition-speed: 0.6s;
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
     }
+    
     body { 
       font-family: 'Inter', sans-serif; 
       transition: background-color var(--transition-speed), color var(--transition-speed);
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
+    
     h1, h2, h3, h4, .font-heading {
       font-family: 'Space Grotesk', sans-serif;
     }
-    .glass {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+
+    /* Core Animation Library */
+    @keyframes blurReveal {
+      from { opacity: 0; filter: blur(10px); transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
     }
-    .light .glass {
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(0, 0, 0, 0.05);
-      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
     }
-    .dark ::selection {
-      background: rgba(99, 102, 241, 0.4);
-      color: #fff;
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-10px) rotate(1deg); }
+      66% { transform: translateY(5px) rotate(-1deg); }
     }
-    .light ::selection {
-      background: rgba(79, 70, 229, 0.15);
-      color: #000;
-    }
-    @keyframes logoPulse {
-      0%, 100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5)); }
-      50% { opacity: 0.8; transform: scale(0.98); filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.2)); }
-    }
+
     @keyframes marquee {
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
     }
-    .logo-animate {
-      animation: logoPulse 4s ease-in-out infinite;
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
     }
-    .animate-marquee {
-      animation: marquee 30s linear infinite;
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
+
+    /* Animation Classes */
+    .animate-blurReveal { animation: blurReveal 0.8s var(--ease-out-expo) forwards; }
+    .animate-slideInRight { animation: slideInRight 0.6s var(--ease-out-expo) forwards; }
+    .animate-float { animation: float 8s ease-in-out infinite; }
+    .animate-marquee { animation: marquee 40s linear infinite; }
+    .animate-pulseGlow { animation: pulseGlow 4s ease-in-out infinite; }
+
+    /* Stagger System */
+    .stagger-container > * { opacity: 0; }
+    .stagger-container > *:nth-child(1) { animation: blurReveal 0.8s var(--ease-out-expo) 0.1s forwards; }
+    .stagger-container > *:nth-child(2) { animation: blurReveal 0.8s var(--ease-out-expo) 0.2s forwards; }
+    .stagger-container > *:nth-child(3) { animation: blurReveal 0.8s var(--ease-out-expo) 0.3s forwards; }
+    .stagger-container > *:nth-child(4) { animation: blurReveal 0.8s var(--ease-out-expo) 0.4s forwards; }
+    .stagger-container > *:nth-child(5) { animation: blurReveal 0.8s var(--ease-out-expo) 0.5s forwards; }
+    .stagger-container > *:nth-child(6) { animation: blurReveal 0.8s var(--ease-out-expo) 0.6s forwards; }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s var(--ease-out-expo);
+    }
+    
+    .glass:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(99, 102, 241, 0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.4);
+    }
+
+    .light .glass {
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+    }
+
+    .light .glass:hover {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(99, 102, 241, 0.2);
+    }
+
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    
-    /* Scrollbar Styling */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    .dark ::webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-    .light ::webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+
+    /* Page Transition Container */
+    .page-wrapper {
+      animation: blurReveal 0.7s var(--ease-out-expo) forwards;
+    }
   </style>
   <script>
     tailwind.config = {
@@ -79,6 +123,7 @@
           },
           animation: {
             'bounce-low': 'bounce 3s infinite',
+            'spin-slow': 'spin 12s linear infinite',
           }
         }
       }
@@ -88,17 +133,19 @@
 {
   "imports": {
     "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
     "react/": "https://esm.sh/react@^19.2.3/",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "react-dom": "https://esm.sh/react-dom@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/jsx-runtime": "https://esm.sh/react@^19.2.3/jsx-runtime",
     "react-dropzone": "https://esm.sh/react-dropzone@^14.3.8",
-    "vite": "https://esm.sh/vite@^7.3.0"
+    "vite": "https://esm.sh/vite@^7.3.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
   }
 }
 </script>
 </head>
-<body class="bg-slate-950 text-slate-50 min-h-screen">
+<body class="bg-slate-950 text-slate-50 selection:bg-indigo-500/30">
   <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
+  <script type="module" src="index.tsx"></script>
 </body>
 </html>

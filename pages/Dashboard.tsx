@@ -1,27 +1,30 @@
 
 import React from 'react';
-import { UserRole, BlockchainNetwork } from '../types';
+import { UserRole } from '../types';
+import AnimatedNumber from '../components/AnimatedNumber';
 
 interface DashboardProps {
   navigate: (page: string) => void;
   role: UserRole;
   theme: 'light' | 'dark';
+  // Fix: Added user prop to satisfy requirements from App.tsx
+  user: any;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ navigate, role, theme }) => {
+const Dashboard: React.FC<DashboardProps> = ({ navigate, role, theme, user }) => {
   const isTalent = role === UserRole.TALENT;
   const isDark = theme === 'dark';
 
   const stats = isTalent ? [
-    { label: 'Earnings', value: '$12,450', icon: 'fa-wallet', color: 'text-emerald-500', bg: 'bg-emerald-500/10', target: 'profile' },
-    { label: 'Active', value: '3', icon: 'fa-bolt', color: 'text-indigo-500', bg: 'bg-indigo-500/10', target: 'my-work' },
-    { label: 'Reputation', value: '740', icon: 'fa-award', color: 'text-purple-500', bg: 'bg-purple-500/10', target: 'profile' },
-    { label: 'Proof-of-Work', value: '12', icon: 'fa-fingerprint', color: 'text-rose-500', bg: 'bg-rose-500/10', target: 'profile' },
+    { label: 'Earnings', value: 12450, prefix: '$', icon: 'fa-wallet', color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+    { label: 'Active', value: 3, icon: 'fa-bolt', color: 'text-indigo-500', bg: 'bg-indigo-500/10' },
+    { label: 'Reputation', value: 740, icon: 'fa-award', color: 'text-purple-500', bg: 'bg-purple-500/10' },
+    { label: 'Proof-of-Work', value: 12, icon: 'fa-fingerprint', color: 'text-rose-500', bg: 'bg-rose-500/10' },
   ] : [
-    { label: 'Funded', value: '$45,000', icon: 'fa-vault', color: 'text-emerald-500', bg: 'bg-emerald-500/10', target: 'sponsor-portal' },
-    { label: 'Active Gigs', value: '8', icon: 'fa-layer-group', color: 'text-indigo-500', bg: 'bg-indigo-500/10', target: 'sponsor-portal' },
-    { label: 'Submissions', value: '24', icon: 'fa-inbox', color: 'text-purple-500', bg: 'bg-purple-500/10', target: 'sponsor-portal' },
-    { label: 'Avg Payout', value: '$1,200', icon: 'fa-chart-pie', color: 'text-rose-500', bg: 'bg-rose-500/10', target: 'sponsor-portal' },
+    { label: 'Funded', value: 45000, prefix: '$', icon: 'fa-vault', color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+    { label: 'Active Gigs', value: 8, icon: 'fa-layer-group', color: 'text-indigo-500', bg: 'bg-indigo-500/10' },
+    { label: 'Submissions', value: 24, icon: 'fa-inbox', color: 'text-purple-500', bg: 'bg-purple-500/10' },
+    { label: 'Avg Payout', value: 1200, prefix: '$', icon: 'fa-chart-pie', color: 'text-rose-500', bg: 'bg-rose-500/10' },
   ];
 
   const recentActivity = [
@@ -31,23 +34,23 @@ const Dashboard: React.FC<DashboardProps> = ({ navigate, role, theme }) => {
   ];
 
   return (
-    <div className="space-y-12 animate-fadeIn">
-      {/* Welcome Hero */}
-      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 pt-4">
+    <div className="space-y-12">
+      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 pt-4 animate-blurReveal">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
              <h1 className={`text-4xl md:text-5xl font-black tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-950'}`}>
-              Welcome, <span className="text-indigo-500">crETHor</span>
+              {/* Fix: Use the username from the passed user object */}
+              Welcome, <span className="text-indigo-500">{user.username.split('_')[0]}</span>
              </h1>
-             <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-xl animate-bounce-short">👋</div>
+             <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-xl animate-float">👋</div>
           </div>
           <p className={`text-lg font-medium max-w-lg ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
             Connecting the world's best talent to the Ethereum ecosystem.
           </p>
         </div>
         
-        <div className={`p-4 rounded-[32px] border flex items-center gap-4 transition-all shadow-xl ${isDark ? 'bg-slate-900 border-slate-800 shadow-indigo-500/5' : 'bg-white border-slate-200 shadow-slate-200/50'}`}>
-          <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-lg">
+        <div className={`p-4 rounded-[32px] border flex items-center gap-4 transition-all shadow-xl group hover:scale-105 active:scale-95 ${isDark ? 'bg-slate-900 border-slate-800 shadow-indigo-500/5' : 'bg-white border-slate-200 shadow-slate-200/50'}`}>
+          <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-lg group-hover:rotate-12 transition-transform">
             <i className="fa-brands fa-ethereum text-xl"></i>
           </div>
           <div className="pr-4">
@@ -57,8 +60,7 @@ const Dashboard: React.FC<DashboardProps> = ({ navigate, role, theme }) => {
         </div>
       </header>
 
-      {/* Grid Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 stagger-container">
         {stats.map((stat, i) => (
           <div 
             key={i} 
@@ -69,25 +71,26 @@ const Dashboard: React.FC<DashboardProps> = ({ navigate, role, theme }) => {
                 <i className={`fa-solid ${stat.icon} text-lg`}></i>
               </div>
               <div className={`text-xs font-black uppercase tracking-[0.2em] mb-2 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{stat.label}</div>
-              <div className={`text-3xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-950'}`}>{stat.value}</div>
+              <div className={`text-3xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-950'}`}>
+                <AnimatedNumber value={stat.value} prefix={stat.prefix} duration={1500} />
+              </div>
             </div>
-            <div className={`absolute top-0 right-0 w-32 h-32 opacity-0 group-hover:opacity-10 transition-opacity blur-3xl rounded-full ${stat.bg}`}></div>
+            <div className={`absolute top-0 right-0 w-32 h-32 opacity-0 group-hover:opacity-20 transition-opacity blur-3xl rounded-full ${stat.bg}`}></div>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        {/* Activity Feed */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-6 animate-blurReveal" style={{ animationDelay: '0.4s' }}>
           <div className="flex items-center justify-between">
             <h2 className={`text-2xl font-black tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-950'}`}>Ecosystem Activity</h2>
-            <button className="text-indigo-500 text-[10px] font-black uppercase tracking-widest hover:underline">View All</button>
+            <button className="text-indigo-500 text-[10px] font-black uppercase tracking-widest hover:underline transition-all hover:tracking-[0.15em]">View All</button>
           </div>
-          <div className={`rounded-[40px] border overflow-hidden transition-all ${isDark ? 'bg-slate-900/20 border-slate-800/50' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200/40'}`}>
+          <div className={`rounded-[40px] border overflow-hidden transition-all stagger-container ${isDark ? 'bg-slate-900/20 border-slate-800/50' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200/40'}`}>
             {recentActivity.map((activity, i) => (
               <div 
                 key={i} 
-                className={`p-6 flex items-center gap-6 border-b last:border-0 transition-colors cursor-pointer group ${isDark ? 'border-slate-800/40 hover:bg-slate-800/30' : 'border-slate-100 hover:bg-slate-50'}`}
+                className={`p-6 flex items-center gap-6 border-b last:border-0 transition-all cursor-pointer group ${isDark ? 'border-slate-800/40 hover:bg-slate-800/30' : 'border-slate-100 hover:bg-slate-50'}`}
                 onClick={() => navigate(activity.target)}
               >
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shrink-0 transition-all group-hover:rotate-6 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
@@ -103,8 +106,7 @@ const Dashboard: React.FC<DashboardProps> = ({ navigate, role, theme }) => {
           </div>
         </div>
 
-        {/* Quick Launch */}
-        <div className="space-y-6">
+        <div className="space-y-6 animate-blurReveal" style={{ animationDelay: '0.6s' }}>
           <h2 className={`text-2xl font-black tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-950'}`}>Terminal</h2>
           <div className="grid gap-4">
             <button 
@@ -116,7 +118,7 @@ const Dashboard: React.FC<DashboardProps> = ({ navigate, role, theme }) => {
               </div>
               <div>
                 <div className={`font-black text-lg font-heading ${isDark ? 'text-white' : 'text-slate-950'}`}>{isTalent ? 'Explore Gigs' : 'Launch Listing'}</div>
-                <div className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">Access the global pool</div>
+                <div className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1 transition-all group-hover:text-indigo-400">Access the global pool</div>
               </div>
             </button>
             <button 
@@ -128,7 +130,7 @@ const Dashboard: React.FC<DashboardProps> = ({ navigate, role, theme }) => {
               </div>
               <div>
                 <div className={`font-black text-lg font-heading ${isDark ? 'text-white' : 'text-slate-950'}`}>Secure DM</div>
-                <div className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">End-to-End via XMTP</div>
+                <div className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1 transition-all group-hover:text-rose-400">End-to-End via XMTP</div>
               </div>
             </button>
           </div>
