@@ -3,19 +3,20 @@ import React, { useState, useEffect } from 'react';
 
 interface LandingProps {
   onLogin: () => void;
+  isConnecting?: boolean;
 }
 
 const L2_PARTNERS = [
-  { name: 'Base', logo: 'https://avatars.githubusercontent.com/u/108554348?s=200&v=4' },
-  { name: 'Arbitrum', logo: 'https://assets.coingecko.com/coins/images/16547/large/arbitrum.png' },
-  { name: 'Optimism', logo: 'https://assets.coingecko.com/coins/images/25244/large/Optimism.png' },
-  { name: 'Starknet', logo: 'https://assets.coingecko.com/coins/images/35294/large/starknet.png' },
-  { name: 'Avalanche', logo: 'https://assets.coingecko.com/coins/images/12559/large/Avalanche_Circle_Red.png' },
-  { name: 'Lisk', logo: 'https://assets.coingecko.com/coins/images/224/large/Lisk.png' },
-  { name: 'Risechain', logo: 'https://pbs.twimg.com/profile_images/1785233139363512320/l4Ym_M7S_400x400.jpg' },
+  { name: 'Base', logo: 'https://raw.githubusercontent.com/base-org/brand-kit/main/logo/symbol/Base_Symbol_Blue.png' },
+  { name: 'Arbitrum', logo: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/info/logo.png' },
+  { name: 'Optimism', logo: 'https://raw.githubusercontent.com/ethereum-optimism/brand-kit/main/assets/png/Optimism_Logo_Mark.png' },
+  { name: 'Starknet', logo: 'https://raw.githubusercontent.com/starknet-io/starknet-brand/main/starknet_symbol/starknet_symbol_color.png' },
+  { name: 'Avalanche', logo: 'https://raw.githubusercontent.com/ava-labs/avalanche-brand-kit/master/Logos/Avalanche%20Logos/Avalanche%20Logo%20Mark/Avalanche_Logo_Mark_Red.png' },
+  { name: 'Lisk', logo: 'https://raw.githubusercontent.com/LiskHQ/lisk-brand/master/logos/lisk-logo-mark-blue.png' },
+  { name: 'Rise', logo: 'https://pbs.twimg.com/profile_images/1785233139363512320/l4Ym_M7S_400x400.jpg' },
 ];
 
-const Landing: React.FC<LandingProps> = ({ onLogin }) => {
+const Landing: React.FC<LandingProps> = ({ onLogin, isConnecting }) => {
   const [authMode, setAuthMode] = useState<'signin' | 'signup' | null>(null);
   const [counts, setCounts] = useState({ rewards: 0, builders: 0, protocols: 0 });
 
@@ -110,11 +111,11 @@ const Landing: React.FC<LandingProps> = ({ onLogin }) => {
             
             <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 mb-10">The Multi-Chain Network State</p>
             
-            <div className="flex animate-marquee whitespace-nowrap">
+            <div className="flex animate-marquee whitespace-nowrap items-center">
               {/* Double the list for seamless loop */}
               {[...L2_PARTNERS, ...L2_PARTNERS].map((l2, idx) => (
                 <div key={`${l2.name}-${idx}`} className="flex items-center gap-4 mx-12 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500 cursor-pointer">
-                  <img src={l2.logo} alt={l2.name} className="w-10 h-10 rounded-xl" />
+                  <img src={l2.logo} alt={l2.name} className="w-10 h-10 object-contain rounded-xl" />
                   <span className="text-2xl font-black tracking-tighter uppercase text-slate-300">{l2.name}</span>
                 </div>
               ))}
@@ -228,79 +229,50 @@ const Landing: React.FC<LandingProps> = ({ onLogin }) => {
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="py-40 px-6 text-center bg-gradient-to-b from-transparent to-indigo-950/20">
-          <div className="max-w-4xl mx-auto space-y-12">
-            <h2 className="text-5xl md:text-7xl font-black font-heading tracking-tighter">READY TO BUILD <br/> <span className="text-indigo-500 underline decoration-indigo-500/30">THE FUTURE?</span></h2>
-            <button 
-              onClick={() => setAuthMode('signup')}
-              className="px-12 py-6 bg-white text-slate-950 rounded-3xl font-black text-sm uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-white/10"
-            >
-              Access Terminal Now
-            </button>
-          </div>
-        </section>
-
         {/* Auth Modal Overlay */}
         {(authMode === 'signin' || authMode === 'signup') && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div 
               className="absolute inset-0 bg-slate-950/95 backdrop-blur-2xl"
-              onClick={() => setAuthMode(null)}
+              onClick={() => !isConnecting && setAuthMode(null)}
             ></div>
             <div className="relative glass w-full max-w-md p-10 rounded-[56px] border border-white/10 shadow-[0_0_120px_rgba(79,70,229,0.3)] animate-scaleIn text-center overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-indigo-500"></div>
               
-              <button 
-                onClick={() => setAuthMode(null)}
-                className="absolute top-8 right-8 text-slate-500 hover:text-white transition-colors"
-              >
-                <i className="fa-solid fa-xmark text-xl"></i>
-              </button>
+              {!isConnecting && (
+                <button 
+                  onClick={() => setAuthMode(null)}
+                  className="absolute top-8 right-8 text-slate-500 hover:text-white transition-colors"
+                >
+                  <i className="fa-solid fa-xmark text-xl"></i>
+                </button>
+              )}
 
               <div className="mb-12">
-                <div className="w-24 h-24 bg-indigo-600 rounded-[32px] flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-indigo-600/30">
-                  <i className="fa-brands fa-ethereum text-white text-5xl"></i>
+                <div className={`w-24 h-24 bg-indigo-600 rounded-[32px] flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-indigo-600/30 ${isConnecting ? 'animate-pulse' : ''}`}>
+                  <i className={`fa-brands fa-ethereum text-white text-5xl ${isConnecting ? 'animate-bounce' : ''}`}></i>
                 </div>
                 <h2 className="text-3xl font-black uppercase tracking-tight mb-2">
-                  {authMode === 'signin' ? 'Welcome Back' : 'Create Identity'}
+                  {isConnecting ? 'Authenticating...' : (authMode === 'signin' ? 'Welcome Back' : 'Create Identity')}
                 </h2>
                 <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">
-                  Authentication Layer v4.2.0
+                  {isConnecting ? 'Verify Signature in your Wallet' : 'Authentication Layer v4.2.0'}
                 </p>
               </div>
 
               <div className="space-y-3">
                 <button 
                   onClick={onLogin}
-                  className="w-full flex items-center justify-between bg-white text-slate-950 p-6 rounded-3xl font-black text-xs uppercase tracking-widest transition-all hover:bg-slate-100 group shadow-xl"
+                  disabled={isConnecting}
+                  className={`w-full flex items-center justify-between bg-white text-slate-950 p-6 rounded-3xl font-black text-xs uppercase tracking-widest transition-all hover:bg-slate-100 group shadow-xl ${isConnecting ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <div className="flex items-center gap-4">
-                    <i className="fa-solid fa-wallet text-xl"></i>
-                    Connect Wallet
+                    <i className={`fa-solid ${isConnecting ? 'fa-spinner animate-spin' : 'fa-wallet'} text-xl`}></i>
+                    {isConnecting ? 'Requesting Signature...' : 'Connect Wallet'}
                   </div>
-                  <i className="fa-solid fa-arrow-right -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all"></i>
-                </button>
-
-                <button 
-                  onClick={onLogin}
-                  className="w-full flex items-center justify-between bg-slate-900 border border-slate-800 text-white p-6 rounded-3xl font-black text-xs uppercase tracking-widest transition-all hover:bg-slate-800 group"
-                >
-                  <div className="flex items-center gap-4">
-                    <i className="fa-brands fa-google text-xl text-rose-500"></i>
-                    Web3 Social Auth
-                  </div>
-                  <i className="fa-solid fa-arrow-right -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all"></i>
+                  {!isConnecting && <i className="fa-solid fa-arrow-right -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all"></i>}
                 </button>
               </div>
-
-              <p className="mt-12 text-slate-600 text-[9px] font-black uppercase tracking-[0.3em]">
-                {authMode === 'signin' ? (
-                  <>Don't have a profile? <button onClick={() => setAuthMode('signup')} className="text-indigo-500 hover:underline">Register Hub</button></>
-                ) : (
-                  <>Already registered? <button onClick={() => setAuthMode('signin')} className="text-indigo-500 hover:underline">Sign In Hub</button></>
-                )}
-              </p>
             </div>
           </div>
         )}
@@ -325,35 +297,6 @@ const Landing: React.FC<LandingProps> = ({ onLogin }) => {
                <i className="fa-brands fa-github hover:text-white cursor-pointer transition-colors"></i>
              </div>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-20">
-            <div className="space-y-6">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Network</h4>
-              <nav className="flex flex-col gap-4 text-xs text-slate-600 font-bold uppercase tracking-widest">
-                <a href="#" className="hover:text-indigo-400 transition-colors">Documentation</a>
-                <a href="#" className="hover:text-indigo-400 transition-colors">Smart Contracts</a>
-                <a href="#" className="hover:text-indigo-400 transition-colors">Whitepaper</a>
-              </nav>
-            </div>
-            <div className="space-y-6">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Company</h4>
-              <nav className="flex flex-col gap-4 text-xs text-slate-600 font-bold uppercase tracking-widest">
-                <a href="#" className="hover:text-indigo-400 transition-colors">Ecosystem</a>
-                <a href="#" className="hover:text-indigo-400 transition-colors">Brand Kit</a>
-                <a href="#" className="hover:text-indigo-400 transition-colors">Terms</a>
-              </nav>
-            </div>
-            <div className="space-y-6">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Node</h4>
-              <nav className="flex flex-col gap-4 text-xs text-slate-600 font-bold uppercase tracking-widest">
-                <a href="#" className="hover:text-indigo-400 transition-colors">Status</a>
-                <a href="#" className="hover:text-indigo-400 transition-colors">Explorer</a>
-                <a href="#" className="hover:text-indigo-400 transition-colors">Uptime</a>
-              </nav>
-            </div>
-          </div>
-        </div>
-        <div className="max-w-7xl mx-auto mt-32 pt-12 border-t border-slate-900/30 text-center">
-           <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-800 italic">SECURED BY THE ETHEREUM VIRTUAL MACHINE</span>
         </div>
       </footer>
     </div>
